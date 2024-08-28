@@ -6,12 +6,15 @@ import authenticateToken from '../utils/userAuth.js'
 import Notes from '../models/notes.js'
 import Contribute from '../models/contribute.js';
 
-notesRouter.post('/add-contri',async(req,res)=>{
+notesRouter.post('/add-contri',authenticateToken,async(req,res)=>{
     try{
        const contri = new Contribute({
-        name:req.body.namex,
-        email:req.body.emailx,
-        message:req.body.messagex
+        title:req.body.titlex,
+        branch:req.body.branchx,
+        semester:req.body.semesterx,
+        subject:req.body.subjectx,
+        message:req.body.messagex,
+        email:req.body.emailx
     })
     await contri.save();
     res.status(200).json("Thank yo !")
