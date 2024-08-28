@@ -12,6 +12,7 @@ import transporter from '../utils/noidemailer.js';
 
 userRouter.post('/sign-up',async(req,res) =>{
     try {
+      const emailDomain = '@juitsolan.in';
     const {username , email , password , address} = req.body
     if(username.length < 5){
         return res
@@ -35,10 +36,17 @@ userRouter.post('/sign-up',async(req,res) =>{
         .status(400)
         .json({message:"⚠️ Password length should be more than 5"})
      }
+     if(!email.endsWith(emailDomain)){
+      return res
+        .status(400)
+        .json({message:"⚠️ Email should belong to JUIT's domain"})
+     }
+
 
      const hashedPassword = await bcrypt.hash(password,10)
 
      const newUser = new User({username:username,email:email,password:hashedPassword,address:address})
+     
      newUser.generateVerificationToken();
      await newUser.save();
      const verificationLink = `${process.env.WEB_URL}/${newUser.verificationToken}`
