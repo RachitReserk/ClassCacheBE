@@ -3,21 +3,10 @@ import cors from 'cors'
 const app = express()
 app.use(express.json())
 
-const allowedOrigins = [
-    'https://classcache.netlify.app',
-    'http://localhost:5173'
-  ];
-
   app.use(cookieParser())
 
   app.use(cors({
-    origin: (origin, callback) => {
-      if (allowedOrigins.includes(origin) || !origin) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+    origin:'https://classcache.netlify.app',
     credentials: true
   }));
 
