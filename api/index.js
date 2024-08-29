@@ -2,6 +2,8 @@ import express from 'express'
 import cors from 'cors'
 const app = express()
 app.use(express.json())
+app.use(cookieParser())
+
 app.use(cors({
     origin: 'https://classcache.netlify.app', // Replace with your client's URL
     credentials: true
@@ -24,7 +26,6 @@ mongoose.connect(process.env.MONGODB_URI).then(() => {
     console.log('Connected to MongoDB')
 })
 
-app.use(cookieParser())
 app.use("/api",userRouter)
 app.use('/api',notesRouter)
 app.use('/api',favRouter)
