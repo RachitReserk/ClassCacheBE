@@ -129,7 +129,9 @@ notesRouter.get('/get-note/:id',async(req,res) =>
     {
     try {
         const {id} = req.params;
+        console.log(id)
         const note = await Notes.findById(id)
+      
         return res.json({
             status:"success",
             data: note

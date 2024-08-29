@@ -103,13 +103,33 @@ userRouter.post('/sign-in',async(req,res) => {
       }
       await bcrypt.compare(password,existingUser.password,(err,data) =>{
          if(data){
+
             const authClaims = [
                {name:existingUser.username},
                {role:existingUser.role}
             ]
 
             const token = jwt.sign({authClaims},process.env.KEY,{expiresIn:"7d"})
-            res.status(200).json({id:existingUser.id,role:existingUser.role,token:token})
+           {/*res.status(200).json({id:existingUser.id,role:existingUser.role,token:token})*/}
+            
+            res.cookie('token',token, {
+               httpOnly: true,
+               secure: process.env.NODE_ENV === 'production', 
+               maxAge: 36000000 
+             });
+             res.cookie('id',existingUser.id, {
+               httpOnly: true,
+               secure: process.env.NODE_ENV === 'production', 
+               maxAge: 36000000 
+             });
+             res.cookie('role',existingUser.role, {
+               httpOnly: true,
+               secure: process.env.NODE_ENV === 'production', 
+               maxAge: 36000000 
+             });
+
+             res.status(200).json({ message: 'Login successful' });
+
          }
          else{
             res.status(400).json({message:"Invalid  Credentials"})
@@ -121,9 +141,20 @@ userRouter.post('/sign-in',async(req,res) => {
    }
 })
 
+userRouter.post('/logout',async(req,res) => {
+   try {
+      res.clearCookie('token');
+      res.clearCookie('id');
+      res.clearCookie('role');
+      res.status(200).json({ message: 'Logged out successfully' });
+   } catch (error) {
+      return res.status(500).json({message:"Internal server error"})
+   }
+})
+
 userRouter.get('/userInfo',authenticateToken,async (req,res) => {
    try {
-      const {id} = req.headers
+      const id = req.cookies.id;
       const data = await User.findById(id).select("-password")
       res.status(200).json(data)
       

@@ -2,7 +2,11 @@ import express from 'express'
 import cors from 'cors'
 const app = express()
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:5173', // Replace with your client's URL
+    credentials: true
+  }));
+
 
 import mongoose from 'mongoose'
 
@@ -14,11 +18,13 @@ import notesRouter from '../controllers/notesManagement.js'
 import favRouter from '../controllers/favourite.js'
 import cartRouter from '../controllers/carts.js'
 import orderRouter from '../controllers/orders.js'
+import cookieParser from 'cookie-parser'
 
 mongoose.connect(process.env.MONGODB_URI).then(() => {
     console.log('Connected to MongoDB')
 })
 
+app.use(cookieParser())
 app.use("/api",userRouter)
 app.use('/api',notesRouter)
 app.use('/api',favRouter)
