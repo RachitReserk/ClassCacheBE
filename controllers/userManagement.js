@@ -51,16 +51,21 @@ userRouter.post('/sign-up',async(req,res) =>{
      await newUser.save();
      const verificationLink = `${process.env.WEB_URL}/${newUser.verificationToken}`
 
-     const from = {
-      name: 'ClassCache',
-      address: 'taryan752@gmail.com'
-     }
-
      await transporter.sendMail({
-      from:from,
+      from:'"Class Cache" <no-reply@classcache.com>',
       to:newUser.email,
-      subject:"ClassCache Email Verification",
-      html:`<p>Click <a href="${verificationLink}">here</a> to verify your email for ClassCache.</p>`
+      subject: 'Verify Your Email Address for Class Cache',
+      html: `
+        <div style="font-family: Arial, sans-serif; color: #333;">
+          <h2>Welcome to Class Cache, ${username}!</h2>
+          <p>Thank you for registering with us. To complete your registration and start sharing and accessing class notes, please verify your email address by clicking the button below:</p>
+          <a href="${verificationLink}" style="display: inline-block; margin: 20px 0; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Verify Your Email</a>
+          <p>If the button above doesn't work, you can also copy and paste the following link into your browser:</p>
+          <p style="word-wrap: break-word;">${verificationLink}</p>
+          <p>If you did not create an account with Class Cache, please ignore this email.</p>
+          <p>Thank you</p>
+        </div>
+      `,
      })
 
      return res.status(200).json({message:"Verification email sent"})     
