@@ -3,7 +3,7 @@ import cors from 'cors'
 const app = express()
 app.use(express.json())
 app.use(cors({
-    origin: 'http://localhost:5173', // Replace with your client's URL
+    origin: 'https://classcache.netlify.app', // Replace with your client's URL
     credentials: true
   }));
 
