@@ -115,16 +115,19 @@ userRouter.post('/sign-in',async(req,res) => {
             res.cookie('token',token, {
                httpOnly: true,
                secure: process.env.NODE_ENV === 'production', 
-               maxAge: 36000000 
+               maxAge: 36000000,
+               sameSite:'none'
              });
              res.cookie('id',existingUser.id, {
                httpOnly: true,
                secure: process.env.NODE_ENV === 'production', 
+               sameSite:'none',
                maxAge: 36000000 
              });
              res.cookie('role',existingUser.role, {
                httpOnly: true,
-               secure: process.env.NODE_ENV === 'production', 
+               secure: process.env.NODE_ENV === 'production',
+               sameSite:'none', 
                maxAge: 36000000 
              });
 
@@ -155,6 +158,7 @@ userRouter.post('/logout',async(req,res) => {
 userRouter.get('/userInfo',authenticateToken,async (req,res) => {
    try {
       const id = req.cookies.id;
+      console.log(id)
       const data = await User.findById(id).select("-password")
       res.status(200).json(data)
       
