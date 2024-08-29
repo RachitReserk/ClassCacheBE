@@ -11,6 +11,7 @@ const token = authHeader && authHeader.split("EVA01 ")[1];*/}
 }*/}
 
 const token = req.cookies.token;
+console.log(token)
 if (!token) return res.status(403).json({ message: 'No token provided' });
 
 jwt.verify(token,process.env.KEY,(err , user)=>{

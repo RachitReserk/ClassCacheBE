@@ -7,7 +7,8 @@ import authenticateToken from '../utils/userAuth.js'
 
 favRouter.put('/put-fav',authenticateToken,async(req,res) => {
 try {
-    const {noteid , id} = req.headers
+    const {noteid} = req.headers
+    const id = req.cookies.id
     const userData = await User.findById(id);
     const isNoteFavourite = userData.favourites.includes(noteid)
     const note = await Note.findById(noteid)
@@ -29,7 +30,7 @@ try {
 favRouter.put("/remove-from-fav/:noteid",authenticateToken,async (req,res) => {
     try {
         const {noteid} = req.params
-        const {id} = req.headers
+        const id = req.cookies.id
         await User.findByIdAndUpdate(id,{
             $pull:{favourites:noteid}
         })
@@ -45,7 +46,7 @@ favRouter.put("/remove-from-fav/:noteid",authenticateToken,async (req,res) => {
 
 favRouter.get('/get-fav',authenticateToken,async (req,res) => {
     try {
-        const {id} = req.headers
+        const id = req.cookies.id
         const userData = await User.findById(id).populate("favourites");
         const favouriteNotes = userData.favourites
         return res.json({
