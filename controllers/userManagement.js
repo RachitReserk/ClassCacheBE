@@ -115,22 +115,16 @@ userRouter.post('/sign-in',async(req,res) => {
             res.cookie('token',token, {
                httpOnly: true,
                secure: process.env.NODE_ENV === 'production', 
-               maxAge: 36000000 ,
-               path: '/',
-               sameSite: 'Lax',
+               maxAge: 36000000 
              });
              res.cookie('id',existingUser.id, {
                httpOnly: true,
                secure: process.env.NODE_ENV === 'production', 
-               sameSite: 'Lax',
-               path: '/' ,
                maxAge: 36000000 
              });
              res.cookie('role',existingUser.role, {
                httpOnly: true,
                secure: process.env.NODE_ENV === 'production', 
-               path: '/',
-               sameSite: 'Lax',
                maxAge: 36000000 
              });
 
