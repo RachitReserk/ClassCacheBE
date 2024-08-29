@@ -2,7 +2,7 @@
   "name": "bookstoreserver",
   "version": "1.0.0",
   "description": "backend for the bkAPP",
-  "main": "app.js",
+  "main": "./api/index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

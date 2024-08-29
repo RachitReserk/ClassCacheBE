@@ -50,7 +50,14 @@ userRouter.post('/sign-up',async(req,res) =>{
      newUser.generateVerificationToken();
      await newUser.save();
      const verificationLink = `${process.env.WEB_URL}/${newUser.verificationToken}`
+
+     const from = {
+      name: 'ClassCache',
+      address: 'taryan752@gmail.com'
+     }
+
      await transporter.sendMail({
+      from:from,
       to:newUser.email,
       subject:"ClassCache Email Verification",
       html:`<p>Click <a href="${verificationLink}">here</a> to verify your email for ClassCache.</p>`
