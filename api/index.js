@@ -6,7 +6,7 @@ app.use(express.json())
   app.use(cookieParser())
 
   app.use(cors({
-    origin:'*',
+    origin:'https://classcache.netlify.app',
     credentials: true
   }));
 
