@@ -26,7 +26,7 @@ notesRouter.post('/add-contri',authenticateToken,async(req,res)=>{
 
 notesRouter.post('/add-notes',authenticateToken, async(req,res) => {
 try {
-    const {id} = req.headers
+    const id = req.cookies.id
     const user = await User.findById(id)
     if(user.role !== 'admin'){
     return res.status(400).json({message:'NO ACCESS TO PERFORM THIS ACTION'})
