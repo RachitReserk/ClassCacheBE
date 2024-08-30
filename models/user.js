@@ -45,7 +45,9 @@ const userSchema = new mongoose.Schema({
         default:false
     },
     verificationToken: String,
-    verificationTokenExpires: Date
+    verificationTokenExpires: Date,
+    resetPasswordToken: String,
+    resetPasswordExpires: Date
 },{timestamps:true});
 
 userSchema.methods.generateVerificationToken = function() {

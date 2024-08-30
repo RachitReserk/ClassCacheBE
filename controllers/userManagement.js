@@ -1,6 +1,6 @@
 import express from 'express';
 const userRouter = express.Router();
-
+import crypto from 'crypto'
 import User from '../models/user.js'
 import bcrypt from 'bcryptjs'
 import  jwt from 'jsonwebtoken'
@@ -160,10 +160,88 @@ userRouter.post('/logout',async(req,res) => {
    }
 })
 
+userRouter.get('/recover-account/:email',async(req,res) => {
+   try {
+      const {email} = req.params
+      const user = await User.findOne({email})
+      if(!user){
+         return res.status(404).json({message:"Account does not exist."})   
+      }
+      else{
+         const generateResetToken = () => {
+            return crypto.randomBytes(32).toString('hex');
+          }
+          const expirationTime = Date.now() + 36000000;
+          const token = generateResetToken()
+          await User.updateOne(
+            { email: email },
+            {
+              resetPasswordToken: token,
+              resetPasswordExpires: expirationTime
+            }
+          );
+         const resetLink = `${process.env.WEB_URL2}/${token}`
+         await transporter.sendMail({
+            from: '"ClassCache Support" <support@class-cache.com>',
+            to: email,
+            subject: 'Account Recovery - Reset Your Password',
+            html: `
+              <p>Dear user,</p>
+              <p>We received a request for your account recovery.Your username is ${user.username} , click the link below to reset your password:</p>
+              <a href="${resetLink}" target="_blank" style="text-decoration: none; color: #fff; background-color: #007BFF; padding: 10px 15px; border-radius: 5px;">Reset Password</a>
+              <p>If you did not request a password reset, please ignore this email. Your password will remain unchanged.</p>
+              <p>Thank you.</p>
+            `,
+          }) 
+      return res.status(200).json({message:"Password reset link sent! Check your email."})   
+      }
+   } catch (error) {
+      return res.status(500).json({message:"Internal server error"})
+   }
+})
+
+userRouter.post('/verify-reset/:token',async(req,res) => {
+   try {
+      const {token} = req.params
+      const {password} = req.body
+      if(password.length < 5){
+         return res
+         .status(400)
+         .json({message:"⚠️ Password length should be more than 5"})
+      }
+
+      const user = await User.findOne({
+         resetPasswordToken: token,
+         resetPasswordExpires: {$gt:Date.now()}
+      })    
+    
+      if(!user){
+         return res.status(404).json({message:"Invalid token"})   
+      }
+      else{
+      const hashedPassword = await bcrypt.hash(password,10)
+    
+      await User.updateOne(
+         { resetPasswordToken: token },
+         {
+          password:hashedPassword
+         }
+       );
+
+      user.resetPasswordToken = undefined
+      user.resetPasswordExpires = undefined
+      user.save()
+
+      return res.status(200).json({message:"Password changed successfully !"})
+      }   
+   } catch (error) {
+   return res.status(500).json({message:"Internal server error"}) 
+   }
+})
+
 userRouter.get('/userInfo',authenticateToken,async (req,res) => {
    try {
       const id = req.cookies.id;
-      console.log(id)
       const data = await User.findById(id).select("-password")
       res.status(200).json(data)
       
