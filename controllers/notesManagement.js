@@ -35,13 +35,13 @@ try {
     url:req.body.url,
     dp:req.body.dp,
     title:req.body.title,
+    branch:req.body.branch,
     author:req.body.author,
     subject:req.body.subject,
     semester:req.body.semester,
-    price:req.body.price,
     desc:req.body.desc,
-    language:req.body.language
     })
+    console.log(note)
     await note.save();
     res.status(200).json({message:"note stored !"})
 } catch (error) {

@@ -18,7 +18,7 @@ const notesSchema = new mongoose.Schema({
   required:true
   },
   branch:{
-    type:String
+    type:String,
   },
   subject:{
     type:String,
