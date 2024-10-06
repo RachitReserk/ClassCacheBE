@@ -19,6 +19,12 @@ userRouter.post('/sign-up',async(req,res) =>{
         .status(400)
         .json({message:"⚠️ Username should be greater than 4"})
     }
+    const usernameRegex = /^[a-zA-Z0-9]+$/;
+
+   if (!usernameRegex.test(username)) {
+    return res.status(400).json({ message: "⚠️ Username should only contain alphabets and numbers" });
+   }
+
     const existingUsername = await User.findOne({username:username})
     if(existingUsername){
         return res
@@ -41,7 +47,6 @@ userRouter.post('/sign-up',async(req,res) =>{
         .status(400)
         .json({message:"⚠️ Email should belong to JUIT's domain"})
      }
-
 
      const hashedPassword = await bcrypt.hash(password,10)
 
@@ -119,19 +124,19 @@ userRouter.post('/sign-in',async(req,res) => {
             
             res.cookie('token',token, {
                httpOnly: true,
-               secure: process.env.NODE_ENV === 'production', 
+               secure: true, 
                maxAge: 36000000,
                sameSite:'none'
              });
              res.cookie('id',existingUser.id, {
                httpOnly: true,
-               secure: process.env.NODE_ENV === 'production', 
+               secure: true, 
                sameSite:'none',
                maxAge: 36000000 
              });
              res.cookie('role',existingUser.role, {
                httpOnly: true,
-               secure: process.env.NODE_ENV === 'production',
+               secure: true,
                sameSite:'none', 
                maxAge: 36000000 
              });
